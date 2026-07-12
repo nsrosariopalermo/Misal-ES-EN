@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Misal Bilingüe / Bilingual Missal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Fondo gris suave para contrastar con el contenedor estilo Linktree */
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Ocultar scrollbar en el menú horizontal para un look de App nativa */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animación suave para la aparición de tarjetas */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <!-- Contenedor central (Estilo Linktree / Mobile) -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col">
+
+        <!-- Encabezado Fijo -->
+        <header class="sticky top-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100 pt-5 pb-2 px-4">
+            <div class="flex justify-between items-center mb-3">
+                <div>
+                    <h1 class="text-xl font-bold text-indigo-900 tracking-tight">Misal Bilingüe</h1>
+                    <p class="text-xs text-gray-500 font-medium">Bilingual Missal</p>
+                </div>
+                <!-- Controles de Accesibilidad -->
+                <div class="flex space-x-1 bg-gray-100 rounded-full p-1">
+                    <button onclick="changeFontSize(-1)" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-gray-700 font-medium transition" title="Reducir letra">A-</button>
+                    <button onclick="changeFontSize(1)" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-gray-700 font-medium transition" title="Aumentar letra">A+</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenedor Principal de Lectura -->
+        <main class="flex-grow p-4 pb-12 bg-gray-50/50" id="missal-content">
+            <!-- El contenido se inyectará aquí dinámicamente -->
+        </main>
+        
+        <!-- Footer sencillo -->
+        <footer class="py-6 text-center text-xs text-gray-400 bg-white border-t border-gray-100">
+            Liturgia de la Santa Misa
+        </footer>
+
+    </div>
+
+    <script>
+        // Datos del Misal
+        const missalData = {
+            "intro": [
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "En el nombre del Padre, y del Hijo, y del Espíritu Santo.", text_en: "In the name of the Father, and of the Son, and of the Holy Spirit." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Amén.", text_en: "Amen." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "El Señor esté con ustedes.", text_en: "The Lord be with you." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Y con tu espíritu.", text_en: "And with your spirit." },
+                { type: "rubric", text_es: "Acto Penitencial", text_en: "Penitential Act" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Hermanos, para celebrar dignamente estos sagrados misterios, reconozcamos nuestros pecados.", text_en: "Brothers and sisters, to celebrate these sacred mysteries worthily, let us acknowledge our sins." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Tú, que has sido enviado a sanar a los afligidos de corazón: Señor, ten piedad.", text_en: "You were sent to heal the contrite of heart: Lord, have mercy." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Señor, ten piedad.", text_en: "Lord, have mercy." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Tú, que has venido a llamar a los pecadores: Cristo, ten piedad.", text_en: "You came to call sinners: Christ, have mercy." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Cristo, ten piedad.", text_en: "Christ, have mercy." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Tú, que estás sentado a la derecha del Padre para interceder por nosotros: Señor, ten piedad.", text_en: "You are seated at the right hand of the Father to intercede for us: Lord, have mercy." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Señor, ten piedad.", text_en: "Lord, have mercy." },
+                { type: "rubric", text_es: "Gloria", text_en: "Gloria" },
+                { speaker_es: "Todos", speaker_en: "All", text_es: "Gloria a Dios en el cielo, y en la tierra paz a los hombres que ama el Señor. Por tu inmensa gloria te alabamos, te bendecimos, te adoramos, te glorificamos, te damos gracias, Señor Dios, Rey celestial, Dios Padre todopoderoso.<br><br>Señor, Hijo único, Jesucristo; Señor Dios, Cordero de Dios, Hijo del Padre; tú que quitas el pecado del mundo, ten piedad de nosotros; tú que quitas el pecado del mundo, atiende nuestra súplica; tú que estás sentado a la derecha del Padre, ten piedad de nosotros.<br><br>Porque sólo tú eres Santo, sólo tú, Señor, sólo tú Altísimo, Jesucristo, con el Espíritu Santo en la gloria de Dios Padre. Amén.", text_en: "Glory to God in the highest, and on earth peace to people of good will. We praise you, we bless you, we adore you, we glorify you, we give you thanks for your great glory, Lord God, heavenly King, O God, almighty Father.<br><br>Lord Jesus Christ, Only Begotten Son, Lord God, Lamb of God, Son of the Father, you take away the sins of the world, have mercy on us; you take away the sins of the world, receive our prayer; you are seated at the right hand of the Father, have mercy on us.<br><br>For you alone are the Holy One, you alone are the Lord, you alone are the Most High, Jesus Christ, with the Holy Spirit, in the glory of God the Father. Amen." },
+                { type: "rubric", text_es: "Oración Colecta", text_en: "Collect Prayer" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "...por los siglos de los siglos.", text_en: "...for ever and ever." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Amén.", text_en: "Amen." }
+            ],
+            "word": [
+                { type: "rubric", text_es: "Lecturas diarias: <a href='https://curas.com.ar/wp/calendario-liturgico/' target='_blank' class='underline text-red-700'>Ver aquí</a>", text_en: "Daily readings: <a href='https://bible.usccb.org/readings/calendar' target='_blank' class='underline text-red-700'>View here</a>" },
+                { type: "rubric", text_es: "[Primera Lectura, Salmo, Segunda Lectura]", text_en: "[First Reading, Psalm, Second Reading]" },
+                { speaker_es: "Lector", speaker_en: "Lector", text_es: "Palabra de Dios.", text_en: "The Word of the Lord." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Te alabamos, Señor.", text_en: "Thanks be to God." },
+                { type: "rubric", text_es: "Evangelio", text_en: "Gospel" },
+                { speaker_es: "Sacerdote/Diácono", speaker_en: "Priest/Deacon", text_es: "El Señor esté con ustedes.", text_en: "The Lord be with you." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Y con tu espíritu.", text_en: "And with your spirit." },
+                { speaker_es: "Sacerdote/Diácono", speaker_en: "Priest/Deacon", text_es: "Evangelio de nuestro Señor Jesucristo, según san N.", text_en: "A reading from the holy Gospel according to N." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Gloria a ti, Señor.", text_en: "Glory to you, O Lord." },
+                { type: "rubric", text_es: "[Al final del Evangelio]", text_en: "[At the end of the Gospel]" },
+                { speaker_es: "Sacerdote/Diácono", speaker_en: "Priest/Deacon", text_es: "Palabra del Señor.", text_en: "The Gospel of the Lord." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Gloria a ti, Señor Jesús.", text_en: "Praise to you, Lord Jesus Christ." },
+                { type: "rubric", text_es: "Profesión de Fe (Credo de los Apóstoles)", text_en: "Profession of Faith (Apostles' Creed)" },
+                { speaker_es: "Todos", speaker_en: "All", text_es: "Creo en Dios, Padre Todopoderoso, creador del cielo y de la tierra. Creo en Jesucristo, su único Hijo, nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos. Creo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.", text_en: "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, At the words that follow, up to and including the Virgin Mary, all bow. who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen." }
+            ],
+            "eucharist": [
+                { type: "rubric", text_es: "Presentación de los Dones", text_en: "Presentation of the Gifts" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Oren, hermanos, para que este sacrificio, mío y de ustedes, sea agradable a Dios, Padre todopoderoso.", text_en: "Pray, brethren (brothers and sisters), that my sacrifice and yours may be acceptable to God, the almighty Father." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "El Señor reciba de tus manos este sacrificio, para alabanza y gloria de su nombre, para nuestro bien y el de toda su santa Iglesia.", text_en: "May the Lord accept the sacrifice at your hands for the praise and glory of his name, for our good and the good of all his holy Church." },
+                { type: "rubric", text_es: "Plegaria Eucarística - Prefacio", text_en: "Eucharistic Prayer - Preface" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "El Señor esté con ustedes.", text_en: "The Lord be with you." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Y con tu espíritu.", text_en: "And with your spirit." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Levantemos el corazón.", text_en: "Lift up your hearts." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Lo tenemos levantado hacia el Señor.", text_en: "We lift them up to the Lord." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Demos gracias al Señor, nuestro Dios.", text_en: "Let us give thanks to the Lord our God." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Es justo y necesario.", text_en: "It is right and just." },
+                { type: "rubric", text_es: "Santo (Sanctus)", text_en: "Holy (Sanctus)" },
+                { speaker_es: "Todos", speaker_en: "All", text_es: "Santo, Santo, Santo es el Señor, Dios del Universo. Llenos están el cielo y la tierra de tu gloria. Hosanna en el cielo. Bendito el que viene en nombre del Señor. Hosanna en el cielo.", text_en: "Holy, Holy, Holy Lord God of hosts. Heaven and earth are full of your glory. Hosanna in the highest. Blessed is he who comes in the name of the Lord. Hosanna in the highest." },
+                { type: "rubric", text_es: "Consagración", text_en: "Consecration" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Éste es el Misterio de la fe.", text_en: "The mystery of faith." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Anunciamos tu muerte, proclamamos tu resurrección. ¡Ven, Señor Jesús!", text_en: "We proclaim your Death, O Lord, and profess your Resurrection until you come again." },
+                { type: "rubric", text_es: "Doxología", text_en: "Doxology" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Por Cristo, con él y en él, a ti, Dios, Padre omnipotente, en la unidad del Espíritu Santo, todo honor y toda gloria por los siglos de los siglos.", text_en: "Through him, and with him, and in him, O God, almighty Father, in the unity of the Holy Spirit, all glory and honour is yours, for ever and ever." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Amén.", text_en: "Amen." }
+            ],
+             "communion": [
+                { type: "rubric", text_es: "Padrenuestro", text_en: "The Lord's Prayer" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Fieles a la recomendación del Salvador y siguiendo su divina enseñanza, nos atrevemos a decir.", text_en: "At the Saviour’s command and formed by divine teaching, we dare to say." },
+                { speaker_es: "Todos", speaker_en: "All", text_es: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.<br><br>Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal.", text_en: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come, thy will be done on earth as it is in heaven.<br><br>Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Líbranos de todos los males, Señor...", text_en: "Deliver us, Lord, we pray, from every evil..." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Tuyo es el reino, tuyo el poder y la gloria, por siempre, Señor.", text_en: "For the kingdom, the power and the glory are yours now and for ever." },
+                { type: "rubric", text_es: "Rito de la Paz", text_en: "Rite of Peace" },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "La paz del Señor esté siempre con ustedes.", text_en: "The peace of the Lord be with you always." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Y con tu espíritu.", text_en: "And with your spirit." },
+                { speaker_es: "Sacerdote/Diácono", speaker_en: "Priest/Deacon", text_es: "Nos damos fraternalmente la paz.", text_en: "Let us offer each other the sign of peace." },
+                { type: "rubric", text_es: "Cordero de Dios (Agnus Dei)", text_en: "Lamb of God (Agnus Dei)" },
+                { speaker_es: "Todos", speaker_en: "All", text_es: "Cordero de Dios, que quitas el pecado del mundo, ten piedad de nosotros.<br>Cordero de Dios, que quitas el pecado del mundo, ten piedad de nosotros.<br>Cordero de Dios, que quitas el pecado del mundo, danos la paz.", text_en: "Lamb of God, you take away the sins of the world, have mercy on us.<br>Lamb of God, you take away the sins of the world, have mercy on us.<br>Lamb of God, you take away the sins of the world, grant us peace." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "Éste es el Cordero de Dios, que quita el pecado del mundo. Dichosos los invitados a la cena del Señor.", text_en: "Behold the Lamb of God, behold him who takes away the sins of the world. Blessed are those called to the supper of the Lamb." },
+                { speaker_es: "Todos", speaker_en: "All", text_es: "Señor, no soy digno de que entres en mi casa, pero una palabra tuya bastará para sanarme.", text_en: "Lord, I am not worthy that you should enter under my roof, but only say the word and my soul shall be healed." }
+             ],
+             "concluding": [
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "El Señor esté con ustedes.", text_en: "The Lord be with you." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Y con tu espíritu.", text_en: "And with your spirit." },
+                { speaker_es: "Sacerdote", speaker_en: "Priest", text_es: "La bendición de Dios todopoderoso, Padre, Hijo y Espíritu Santo, descienda sobre ustedes y permanezca para siempre.", text_en: "May almighty God bless you, the Father, and the Son, and the Holy Spirit." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Amén.", text_en: "Amen." },
+                { speaker_es: "Sacerdote/Diácono", speaker_en: "Priest/Deacon", text_es: "Pueden ir en paz.", text_en: "Go in peace." },
+                { speaker_es: "Pueblo", speaker_en: "People", text_es: "Demos gracias a Dios.", text_en: "Thanks be to God." }
+             ]
+        };
+
+        const sectionTitles = {
+            "intro": { es: "Ritos Iniciales", en: "Introductory Rites" },
+            "word": { es: "Liturgia de la Palabra", en: "Liturgy of the Word" },
+            "eucharist": { es: "Liturgia Eucarística", en: "Liturgy of the Eucharist" },
+            "communion": { es: "Rito de la Comunión", en: "Communion Rite" },
+            "concluding": { es: "Ritos de Conclusión", en: "Concluding Rites" }
+        };
+
+        let currentSize = 1; // Multiplicador de tamaño base
+        const contentContainer = document.getElementById('missal-content');
+
+        function renderEntireMissal() {
+            contentContainer.innerHTML = ''; // Limpiar contenedor principal
+
+            const order = ["intro", "word", "eucharist", "communion", "concluding"];
+
+            order.forEach(partKey => {
+                // 1. Crear el separador/título de la sección
+                const titleData = sectionTitles[partKey];
+                const sectionHeader = document.createElement('div');
+                sectionHeader.className = 'mt-10 mb-4 border-b-2 border-indigo-100 pb-2 fade-in';
+                
+                // Evitar un margen superior excesivo en la primerísima sección
+                if(partKey === "intro") sectionHeader.classList.remove('mt-10'); 
+                
+                sectionHeader.innerHTML = `
+                    <h2 class="text-2xl font-bold text-indigo-900 tracking-tight missal-text-es">${titleData.es}</h2>
+                    <h3 class="text-sm font-semibold text-indigo-500 uppercase tracking-wider missal-text-en">${titleData.en}</h3>
+                `;
+                contentContainer.appendChild(sectionHeader);
+
+                // 2. Inyectar las tarjetas de esa sección
+                const data = missalData[partKey];
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'mb-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 fade-in';
+                    
+                    if (item.type === 'rubric') {
+                        // Rúbricas (Instrucciones)
+                        card.classList.add('bg-red-50/50', 'border-red-100');
+                        card.innerHTML = `
+                            <div class="text-center">
+                                <span class="block text-red-600 font-medium italic text-sm mb-1">${item.text_es}</span>
+                                <span class="block text-red-500 font-medium italic text-xs opacity-80">${item.text_en}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Texto Hablado
+                        card.innerHTML = `
+                            <div class="mb-2">
+                                <span class="inline-block bg-indigo-50 text-indigo-800 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
+                                    ${item.speaker_es} <span class="text-indigo-400 font-normal mx-1">|</span> ${item.speaker_en}
+                                </span>
+                            </div>
+                            <p class="text-gray-900 font-semibold leading-relaxed mb-2 missal-text-es">${item.text_es}</p>
+                            <p class="text-gray-500 font-medium leading-relaxed text-sm missal-text-en">${item.text_en}</p>
+                        `;
+                    }
+                    contentContainer.appendChild(card);
+                });
+            });
+
+            // Aplicar tamaño de fuente al finalizar
+            applyFontSize();
+        }
+
+        // Función para cambiar tamaño de fuente dinámicamente
+        window.changeFontSize = function(step) {
+            const newSize = currentSize + (step * 0.1);
+            // Limitar entre 0.8x y 1.5x
+            if (newSize >= 0.8 && newSize <= 1.5) {
+                currentSize = newSize;
+                applyFontSize();
+            }
+        };
+
+        function applyFontSize() {
+            // Español
+            document.querySelectorAll('.missal-text-es').forEach(el => {
+                el.style.fontSize = `${1 * currentSize}rem`; 
+            });
+            // Inglés
+            document.querySelectorAll('.missal-text-en').forEach(el => {
+                el.style.fontSize = `${0.875 * currentSize}rem`; 
+            });
+        }
+
+        // Inicializar renderizando todo el misal de una sola vez
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEntireMissal();
+        });
+
+    </script>
+</body>
+</html>
